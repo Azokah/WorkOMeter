@@ -122,7 +122,7 @@ void loadTasks(std::vector<Task *> *vector){
     std::string name;
     int completion;
     std::time_t date;
-    std::ifstream i("tasks.json");
+    std::ifstream i("~/tasks.json");
     if (!i.is_open()) {
         std::cout<<"Failed to open json"<<std::endl;
     } else {
@@ -144,7 +144,7 @@ void saveTasks(std::vector<Task *> *vector){
            j[std::to_string(t)]["Date"] = vector->at(t)->getDateRaw();
         }
     if(j != NULL){
-        std::ofstream o("tasks.json");
+        std::ofstream o("~/tasks.json");
         o << std::setw(4) << j << std::endl;
     }
 };
