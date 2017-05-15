@@ -4,6 +4,10 @@
 #include <cstring> // para usar el strcmp
 #include <vector> // Para almacenar el vector de tareas
 #include <sstream> // Para usar istringstream para transformar Strings a Int
+#include <fstream> // To read and write JSON files
+#include "json.hpp" // For JSON Management
+
+using json = nlohmann::json;
 
 class Task{
   public:
@@ -17,7 +21,7 @@ class Task{
     int getCompletion();
     std::string getName();
     std::string getDate();
-
+    std::time_t getDateRaw();
     std::string toString();
 
   private:
@@ -52,15 +56,17 @@ std::string Task::getCompletionString(){
     return barra;
 };
 int Task::getCompletion(){ return completion;};
+    
+std::string Task::getDate() {
     //Todo este quilombo porque asctime devuelve un ENDLINE al final del string
     //y no queria que saltara al renglon de abajo
-    std::string Task::getDate() {
     std::string dateStr;
     dateStr = std::asctime(std::localtime(&date));
     dateStr.pop_back();
     return dateStr;
 };
 std::string Task::getName() { return name; };
+std::time_t Task::getDateRaw(){ return date;};
 std::string Task::toString(){
     //Metodo para convertir los datos de una tarea a un string y devolverlo.
     std::string str;
@@ -82,7 +88,7 @@ bool testArguments(int argc, char *argv[], std::vector<Task *> *vector){
     //Para poder crear tareas sin tener que ingresar a la APP. Mediante argumentos
     //Devuelve false si no habian argumentos y true si habian
     bool boolArgs = false;
-    
+
     //MostrarTareas
     if(argc > 1 && std::strcmp(argv[1], "-show") == 0){
         //Muestro las tareas
@@ -107,6 +113,38 @@ bool testArguments(int argc, char *argv[], std::vector<Task *> *vector){
     return boolArgs;
 }
 
+void loadTasks(std::vector<Task *> *vector){
+    //Carga el json y llena el vector de tareas
+    std::string name;
+    int completion;
+    std::time_t date;
+    std::ifstream i("tasks.json");
+    if (!i.is_open()) {
+        std::cout<<"Failed to open json"<<std::endl;
+    } else {
+        json j(i);
+        for (auto& element : j) {
+            name = element.at("Name");
+            completion = element.at("Completion");
+            date = element.at("Date");
+            vector->push_back(newTask(name,completion,date));
+        }
+    }
+};
+void saveTasks(std::vector<Task *> *vector){
+    //Crea un JSON y lo guarda
+    json j;
+    for (int t = 0; t < vector->size(); t++){
+           j[std::to_string(t)]["Name"] = vector->at(t)->getName();
+           j[std::to_string(t)]["Completion"] = vector->at(t)->getCompletion();
+           j[std::to_string(t)]["Date"] = vector->at(t)->getDateRaw();
+        }
+    if(j != NULL){
+        std::ofstream o("tasks.json");
+        o << std::setw(4) << j << std::endl;
+    }
+};
+
 int main(int argc, char *argv[]){
         //Declaro las variables basicas
         int opc;
@@ -115,6 +153,7 @@ int main(int argc, char *argv[]){
         int completionT;
         std::time_t dateT;
         std::vector<Task *> tasks;
+        loadTasks(&tasks);
         //Checkeo si se pusieron argumentos, si no, ingreso al menu
     if (!testArguments(argc, argv,&tasks)){
 
@@ -187,5 +226,6 @@ int main(int argc, char *argv[]){
             };
         };
     }
+    saveTasks(&tasks);
     return 0;
 };
