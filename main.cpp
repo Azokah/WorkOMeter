@@ -82,10 +82,16 @@ bool testArguments(int argc, char *argv[], std::vector<Task *> *vector){
     //Para poder crear tareas sin tener que ingresar a la APP. Mediante argumentos
     //Devuelve false si no habian argumentos y true si habian
     bool boolArgs = false;
-
-    for (int args = 0; args < argc; args++){
-        std::cout << argv[args] << std::endl;
+    
+    //MostrarTareas
+    if(argc > 1 && std::strcmp(argv[1], "-show") == 0){
+        //Muestro las tareas
+        for (int t = 0; t < vector->size(); t++){
+            std::cout << vector->at(t)->toString() << std::endl;
+        }
+        boolArgs = true;
     }
+    //Agregar una tarea
 
     if (argc == 4){
         if (std::strcmp(argv[1], "-add") == 0){
@@ -118,19 +124,15 @@ int main(int argc, char *argv[]){
         std::cout << "**************************" << std::endl
                   << std::endl;
 
-        //Muestro las tareas
-        for (int t = 0; t < tasks.size(); t++){
-            std::cout << tasks.at(t)->toString() << std::endl;
-        }
+        
 
         //Entro al loop del menu
         while (running)
         {
-
             //Muestro las tareas
-        for (int t = 0; t < tasks.size(); t++){
-            std::cout << tasks.at(t)->toString() << std::endl;
-        }
+            for (int t = 0; t < tasks.size(); t++){
+                std::cout << tasks.at(t)->toString() << std::endl;
+            }
             choosing = true;
             while (choosing){
                 std::cout << "Choose an option: " << std::endl;
