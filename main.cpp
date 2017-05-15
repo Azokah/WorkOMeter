@@ -92,10 +92,14 @@ bool testArguments(int argc, char *argv[], std::vector<Task *> *vector){
     //MostrarTareas
     if(argc > 1 && std::strcmp(argv[1], "-show") == 0){
         //Muestro las tareas
-        for (int t = 0; t < vector->size(); t++){
-            std::cout << vector->at(t)->toString() << std::endl;
+        if(vector->size() == 0){
+            std::cout<<"No pending tasks!"<<std::endl;
+        }else {
+            for (int t = 0; t < vector->size(); t++){
+                std::cout << vector->at(t)->toString() << std::endl;
+            }
         }
-        boolArgs = true;
+            boolArgs = true;
     }
     //Agregar una tarea
 
