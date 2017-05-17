@@ -1,9 +1,10 @@
 #include <iostream>
 #include <string>
-#include <ctime> // Para la fecha y hora de las tareas
-#include <cstring> // para usar el strcmp
-#include <vector> // Para almacenar el vector de tareas
-#include <sstream> // Para usar istringstream para transformar Strings a Int
+#include <ctime> // Date and Time
+#include <cstring> // Strcmp
+#include <cstdlib> // Getenv
+#include <vector> // To Storage a Tasks vector
+#include <sstream> // To Use istringstream for Strings to Int conversion
 #include <fstream> // To read and write JSON files
 #include "json.hpp" // For JSON Management
 
@@ -117,12 +118,20 @@ bool testArguments(int argc, char *argv[], std::vector<Task *> *vector){
     return boolArgs;
 }
 
+
+std::string getPath(){
+    std::string path;
+    path.append(getenv("HOME"));
+    path.append("/tasks.json");
+
+    return path;
+}
 void loadTasks(std::vector<Task *> *vector){
     //Carga el json y llena el vector de tareas
     std::string name;
     int completion;
     std::time_t date;
-    std::ifstream i("~/Documentos/WorkOMeter/tasks.json");
+    std::ifstream i(getPath());
     if (!i.is_open()) {
         std::cout<<"Failed to open json"<<std::endl;
     } else {
@@ -144,7 +153,7 @@ void saveTasks(std::vector<Task *> *vector){
            j[std::to_string(t)]["Date"] = vector->at(t)->getDateRaw();
         }
     if(j != NULL){
-        std::ofstream o("~/Documentos/WorkOMeter/tasks.json");
+        std::ofstream o(getPath());
         o << std::setw(4) << j << std::endl;
     }
 };
