@@ -1,3 +1,8 @@
+/*****************************************
+*** Created by Jaime Gonzalez Bonorino ***
+*** Contact: jaimegbonorino@gmail.com ****
+*****************************************/
+
 #include <iostream>
 #include <string>
 #include <ctime> // Date and Time
