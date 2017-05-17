@@ -127,7 +127,7 @@ bool testArguments(int argc, char *argv[], std::vector<Task *> *vector){
 std::string getPath(){
     std::string path;
     path.append(getenv("HOME"));
-    path.append("/tasks.json");
+    path.append("/.tasks.json");
 
     return path;
 }
